@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PBSR: Pseudo-Burst Super-Resolution via Zero-Shot Novel View Synthesis</title>
+<meta name="description" content="PBSR synthesizes pseudo-burst frames from a single image with zero-shot novel view synthesis and reconstructs them with a burst super-resolution network. New Generation Computing, 2026.">
+<link rel="canonical" href="https://toyotafrc.github.io/PBSR-Proj/">
+<meta name="citation_title" content="PBSR: Pseudo-Burst Super-Resolution via Zero-Shot Novel View Synthesis">
+<meta name="citation_author" content="Kondo, Yuki">
+<meta name="citation_author" content="Ukita, Norimichi">
+<meta name="citation_journal_title" content="New Generation Computing">
+<meta name="citation_publication_date" content="2026/10/28">
+<meta name="citation_volume" content="44">
+<meta name="citation_issue" content="4">
+<meta name="citation_firstpage" content="32">
+<meta name="citation_doi" content="10.1007/s00354-026-00336-6">
+<meta name="citation_arxiv_id" content="2610.41258">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PBSR: Pseudo-Burst Super-Resolution via Zero-Shot Novel View Synthesis">
+<meta property="og:description" content="Burst super-resolution from a single image: PBSR synthesizes pseudo-burst frames with zero-shot novel view synthesis.">
+<meta property="og:url" content="https://toyotafrc.github.io/PBSR-Proj/">
+<meta property="og:image" content="https://toyotafrc.github.io/PBSR-Proj/static/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A single low-resolution image, its pseudo-burst frames, and the PBSR super-resolution result.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="static/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="static/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "PBSR: Pseudo-Burst Super-Resolution via Zero-Shot Novel View Synthesis",
+  "description": "PBSR synthesizes pseudo-burst frames from a single image with zero-shot novel view synthesis and reconstructs them with a burst super-resolution network.",
+  "author": [
+    {"@type": "Person", "name": "Yuki Kondo", "sameAs": ["https://orcid.org/0000-0002-5263-8722", "https://scholar.google.com/citations?user=lijAs5AAAAAJ", "https://www.linkedin.com/in/yuki-kondo-0519511b8", "https://yuki-11.github.io/"],
+     "affiliation": [{"@type": "Organization", "name": "Toyota Technological Institute"},
+                     {"@type": "Organization", "name": "Frontier Research Center, Toyota Motor Corporation"}]},
+    {"@type": "Person", "name": "Norimichi Ukita", "sameAs": ["https://orcid.org/0000-0002-0240-1065", "https://scholar.google.com/citations?user=Tgbsbs8AAAAJ", "https://www.linkedin.com/in/norimichi-ukita-08687128", "https://www.toyota-ti.ac.jp/Lab/Denshi/iim/ukita/"],
+     "affiliation": [{"@type": "Organization", "name": "Toyota Technological Institute"}]}
+  ],
+  "datePublished": "2026-10-28",
+  "isPartOf": {"@type": "Periodical", "name": "New Generation Computing"},
+  "identifier": {"@type": "PropertyValue", "propertyID": "DOI", "value": "10.1007/s00354-026-00336-6"},
+  "sameAs": ["https://doi.org/10.1007/s00354-026-00336-6", "https://arxiv.org/abs/2610.41258"],
+  "url": "https://toyotafrc.github.io/PBSR-Proj/",
+  "image": "https://toyotafrc.github.io/PBSR-Proj/static/img/og.png"
+}
+</script>
+<script src="static/js/main.js" defer></script>
+<script data-goatcounter="https://yukik.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="hero">
+  <p class="venue">New Generation Computing &middot; 2026</p>
+  <h1><span class="acr">PBSR</span>: Pseudo-Burst Super-Resolution via Zero-Shot Novel View Synthesis</h1>
+  <p class="authors">
+    <span class="author"><a href="https://yuki-11.github.io/">Yuki Kondo</a><sup>1,2</sup>
+      <a class="author-icon icon-scholar" href="https://scholar.google.com/citations?user=lijAs5AAAAAJ" aria-label="Yuki Kondo on Google Scholar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg></a>
+      <a class="author-icon icon-linkedin" href="https://www.linkedin.com/in/yuki-kondo-0519511b8" aria-label="Yuki Kondo on LinkedIn"><svg viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d="M416 32L31.9 32C14.3 32 0 46.5 0 64.3L0 447.7C0 465.5 14.3 480 31.9 480L416 480c17.6 0 32-14.5 32-32.3l0-383.4C448 46.5 433.6 32 416 32zM135.4 416l-66.4 0 0-213.8 66.5 0 0 213.8-.1 0zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77zM384.3 416l-66.4 0 0-104c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9l0 105.8-66.4 0 0-213.8 63.7 0 0 29.2 .9 0c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9l0 117.2z"/></svg></a>
+      <a class="author-icon icon-orcid" href="https://orcid.org/0000-0002-5263-8722" aria-label="Yuki Kondo on ORCID"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a>
+    </span>
+    <span class="author"><a href="https://www.toyota-ti.ac.jp/Lab/Denshi/iim/ukita/">Norimichi Ukita</a><sup>1</sup>
+      <a class="author-icon icon-scholar" href="https://scholar.google.com/citations?user=Tgbsbs8AAAAJ" aria-label="Norimichi Ukita on Google Scholar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg></a>
+      <a class="author-icon icon-linkedin" href="https://www.linkedin.com/in/norimichi-ukita-08687128" aria-label="Norimichi Ukita on LinkedIn"><svg viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d="M416 32L31.9 32C14.3 32 0 46.5 0 64.3L0 447.7C0 465.5 14.3 480 31.9 480L416 480c17.6 0 32-14.5 32-32.3l0-383.4C448 46.5 433.6 32 416 32zM135.4 416l-66.4 0 0-213.8 66.5 0 0 213.8-.1 0zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77zM384.3 416l-66.4 0 0-104c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9l0 105.8-66.4 0 0-213.8 63.7 0 0 29.2 .9 0c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9l0 117.2z"/></svg></a>
+      <a class="author-icon icon-orcid" href="https://orcid.org/0000-0002-0240-1065" aria-label="Norimichi Ukita on ORCID"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg></a>
+    </span>
+  </p>
+  <p class="affils">
+    <span><sup>1</sup>Toyota Technological Institute</span>
+    <span><sup>2</sup>Frontier Research Center, Toyota Motor Corporation</span>
+  </p>
+  <div class="org-logos">
+    <a href="https://www.toyota-ti.ac.jp/english/"><img src="static/img/logos/tti.webp" width="128" height="120" alt="Toyota Technological Institute"></a>
+    <a href="https://www.toyota-ti.ac.jp/Lab/Denshi/iim/index.html"><img src="static/img/logos/iim.webp" width="111" height="120" alt="Intelligent Information Media Lab"></a>
+    <a href="https://global.toyota/en/mobility/frontier-research/"><img src="static/img/logos/frc.webp" width="144" height="120" alt="Frontier Research Center, Toyota Motor Corporation"></a>
+  </div>
+  <nav class="links" aria-label="Paper links">
+    <a class="btn" href="https://doi.org/10.1007/s00354-026-00336-6" data-track="click-doi">
+      <svg class="icon-paper" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>Paper
+    </a>
+    <a class="btn" href="https://arxiv.org/abs/2610.41258" data-track="click-arxiv">
+      <svg class="icon-fill icon-arxiv" viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path transform="matrix(1.55,0,0,-1.55,-123.2,553.6)" d="m 119.65,351.996 c -5.84961,0.13477 -11.1943,-3.29883 -13.502,-8.67578 -2.19629,-5.27051 -0.61914,-8.9668 4.19727,-15.8652 7.05469,-10.3799 78.8242,-96.5625 78.8242,-96.5625 l -15.8828,-14.8633 c -13.3809,-13.3779 -13.9561,-31.333 -1.50977,-43.7754 l 18.4922,-17.6133 -51.5977,-63.377 c -4.00586,-4.26758 -6.48535,-11.7559 -4.24805,-17.1309 2.27832,-5.53613 7.69727,-9.12891 13.6836,-9.07031 3.83398,0.0957 7.43262,1.87402 9.83789,4.86133 l 61.3691,57.0566 94.5762,-90.0703 c 3.19434,-3.08398 7.44336,-4.83984 11.8828,-4.91016 1.60449,0.0039 3.19824,0.245117 4.73242,0.714844 5.7793,1.80566 10.249,6.41797 11.8711,12.252 1.2998,5.47363 -0.27637,11.2334 -4.18164,15.2832 l -83.0859,100.011996 14.8789,13.834 c 11.0957,10.0029 11.1543,27.3906 0.12695,37.4688 l -16.2949,15.6309 56.2559,66.4434 0.0742,0.0859 0.0664,0.0899 c 5.02734,6.53125 7.43164,11.5615 4.83984,17.9395 -3.13379,5.96875 -8.69727,10.29 -15.2559,11.8516 -0.67676,0.0908 -1.35938,0.13574 -2.04297,0.13671 l -0.004,-0.0117 c -4.42871,-0.27051 -8.61035,-2.13086 -11.7754,-5.24023 l -0.13086,-0.10743 -0.12304,-0.11132 -65.207,-59.127 -89.8965,86.2402 c 0,0 -5.33398,6.47754 -10.9707,6.61133 z m 178.104,-33.041 c 0.47852,-0.002 0.95703,-0.0332 1.43164,-0.0957 4.84277,-1.33301 8.95605,-4.54004 11.4316,-8.91016 1.44922,-3.5625 1.00293,-6.45703 -4.19727,-13.2148 l -56.0586,-66.2188 -26.375,25.3027 64.9551,58.9062 c 2.33887,2.41504 5.46484,3.91113 8.8125,4.2168 v 0.0137 z M 192.436,227.402 334.446,57.244 c 2.78711,-3.48926 4.5293,-6.97949 3.3418,-10.9121 -1.16113,-4.30273 -4.43457,-7.71777 -8.68555,-9.05664 -1.08105,-0.333984 -2.20508,-0.503906 -3.33594,-0.505859 -3.20801,0.07617 -6.26953,1.35645 -8.57617,3.58789 l -142.033,135.284999 c -11.1719,11.1719 -9.48242,26.0195 1.39258,36.8945 z"/></svg>arXiv
+    </a>
+    <a class="btn btn-ghost" href="#citation">
+      <svg class="icon-bibtex" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 4C7 4 6 5 6 7v2c0 1-1 2-2 2 1 0 2 1 2 2v2c0 2 1 3 3 3M15 4c2 0 3 1 3 3v2c0 1 1 2 2 2-1 0-2 1-2 2v2c0 2-1 3-3 3"/></svg>BibTeX
+    </a>
+  </nav>
+</header>
+
+<main id="main">
+<section class="teaser" aria-label="Overview">
+  <p class="tldr" id="tldr"><strong>TL;DR</strong> PBSR turns a single photo into a pseudo-burst with zero-shot novel view synthesis, so that a burst super-resolution network can use multi-frame cues without capturing a burst.</p>
+  <div class="pipeline">
+    <figure class="stage">
+      <div class="frame-box"><img class="pixelated" src="static/img/teaser/lr.webp" width="160" height="160" alt="Single low-resolution input frame"></div>
+      <figcaption><b>1 low-resolution image</b>the only capture</figcaption>
+    </figure>
+    <div class="arrow" aria-hidden="true">&rarr;</div>
+    <figure class="stage">
+      <div class="frame-box" data-burst data-fps="6" data-frames="static/img/teaser/pseudo_01.webp,static/img/teaser/pseudo_02.webp,static/img/teaser/pseudo_03.webp,static/img/teaser/pseudo_04.webp,static/img/teaser/pseudo_05.webp,static/img/teaser/pseudo_06.webp,static/img/teaser/pseudo_07.webp,static/img/teaser/pseudo_08.webp,static/img/teaser/pseudo_09.webp,static/img/teaser/pseudo_10.webp,static/img/teaser/pseudo_11.webp,static/img/teaser/pseudo_12.webp,static/img/teaser/pseudo_13.webp">
+        <img src="static/img/teaser/pseudo_01.webp" width="256" height="256" alt="Pseudo-burst frame synthesized from the input by zero-shot novel view synthesis">
+        <span class="badge">1 / 13</span>
+      </div>
+      <div class="burst-ctl">
+        <button class="play" type="button">Pause</button>
+        <input class="scrub" type="range" min="1" max="13" step="1" value="1" aria-label="Pseudo-burst frame">
+      </div>
+      <figcaption><b>13 pseudo-burst frames</b>zero-shot novel view synthesis</figcaption>
+    </figure>
+    <div class="arrow" aria-hidden="true">&rarr;</div>
+    <figure class="stage stage-wide">
+      <div class="compare" data-compare="teaser">
+        <img class="c-base" src="static/img/teaser/sr_dbsr1.webp" width="640" height="640" alt="SISR result (DBSR-1, single frame)" fetchpriority="high">
+        <img class="c-top" src="static/img/teaser/sr_pbsr14.webp" width="640" height="640" alt="PBSR-14 result" fetchpriority="high">
+        <span class="c-label c-label-l">PBSR-14</span>
+        <span class="c-label c-label-r">SISR (DBSR-1)</span>
+        <span class="c-handle" aria-hidden="true"></span>
+        <input class="c-range" type="range" min="0" max="100" step="1" value="50" aria-label="Divider position: PBSR-14 left, SISR (DBSR-1) right">
+      </div>
+      <figcaption><b>&times;4 super-resolution</b><span class="nw">PBSR-14</span> (left) vs. <span class="nw">SISR (DBSR-1)</span> (right)</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="abstract" class="abstract" aria-labelledby="abstract-h">
+  <h2 id="abstract-h">Abstract</h2>
+  <p>Burst super-resolution (BSR) achieves higher reconstruction fidelity than single-image super-resolution (SISR) by aggregating sub-pixel information from multiple frames. However, it requires a burst of frames captured under near-static conditions, and such frames are unavailable for single photographs or archival images. We propose Pseudo-Burst Super-Resolution (PBSR), which brings BSR-style reconstruction to the single-image input setting by synthesizing pseudo-burst frames via zero-shot novel view synthesis (NVS). PBSR first generates pseudo-burst frames with realistic parallax using a viewpoint sampling strategy calibrated to the pixel-shift distribution of real burst datasets. The frames are then processed by a BSR backbone equipped with a geometry-aware alignment module that reuses the NVS camera parameters and estimated depth. While the NVS stage is zero-shot, the backbone is fine-tuned with an artifact-aware adaptation so that it can exploit the synthesized frames despite their generative artifacts. Experiments on the BurstSR dataset show that PBSR consistently improves in PSNR, SSIM, and LPIPS over the single-frame baseline with the same reconstruction backbone.</p>
+</section>
+
+<section id="method" aria-labelledby="method-h">
+  <h2 id="method-h">PBSR = zero-shot novel view synthesis + burst super-resolution</h2>
+  <figure class="fig-wide">
+    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1504 511%22/%3E" data-src="static/img/fig/overview.webp" width="1504" height="511" alt="Overview: (a) SISR takes one image, (b) BSR takes a real burst, (c) PBSR synthesizes pseudo-burst frames from one image and feeds them to a BSR network." decoding="async">
+    <figcaption>SISR uses one image, and BSR needs a real burst. PBSR synthesizes pseudo-burst frames from one image and reconstructs them with a BSR network.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li><h3>Calibrated viewpoint sampling</h3><p>Camera offsets are set so that the resulting pixel shifts (about 4&ndash;9 px) fall within the range seen in real BurstSR bursts.</p></li>
+    <li><h3>Zero-shot pseudo-burst generation</h3><p>ZeroNVS renders the input from the sampled nearby viewpoints. The frames carry depth-dependent motion parallax, which image-plane shifts cannot produce.</p></li>
+    <li><h3>Geometry-aware burst SR</h3><p>NVS-GF (NVS-Parametrized Geometric Flow) turns the sampled camera parameters and an estimated depth map into flow fields for alignment. Artifact-aware adaptation fine-tunes the DBSR backbone on simulated pseudo-bursts.</p></li>
+  </ol>
+  <figure class="fig-mid">
+    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 570 278%22/%3E" data-src="static/img/fig/shift_dist.svg" width="570" height="278" alt="Distribution of mean pixel shifts between frames in the BurstSR dataset" decoding="async">
+    <figcaption>Mean pixel shifts in real BurstSR bursts (mode 2&ndash;4 px, median 8.30 px). The sampled viewpoints give shifts within this mode-to-median range.</figcaption>
+  </figure>
+</section>
+
+<section id="results" aria-labelledby="results-h">
+  <h2 id="results-h">Sharper than the single-frame baseline, from a single capture</h2>
+  <p class="lead">All methods use the DBSR (Deep Burst Super-Resolution; Bhat et al., CVPR 2021) backbone; PBSR-14 adds artifact-aware fine-tuning. SISR (DBSR-1) runs DBSR on the single input frame, i.e., the SISR setting. Drag the divider to compare PBSR-14 (left) with the method chosen below. DBSR-14 uses 14 real burst frames and serves as an upper reference.</p>
+  <div class="viewer" data-viewer data-root="static/img/results">
+    <div class="opp" role="group" aria-label="Method shown on the right">
+      <button type="button" data-opp="dbsr1" data-label="SISR (DBSR-1)" aria-pressed="true">SISR (DBSR-1) <small>1 real frame</small></button>
+      <button type="button" data-opp="dbsr14" data-label="DBSR-14" aria-pressed="false">DBSR-14 <small>14 real frames</small></button>
+      <button type="button" data-opp="pbsr14zs" data-label="PBSR-14 (z/s)" aria-pressed="false">PBSR-14 (z/s) <small>no adaptation</small></button>
+      <button type="button" data-opp="gt" data-label="Ground truth" aria-pressed="false">Ground truth</button>
+    </div>
+    <div class="compare compare-lg">
+      <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 640 640%22/%3E" class="c-base" data-src="static/img/results/0008_0007/dbsr1.webp" width="640" height="640" alt="Result of the method shown on the right" decoding="async">
+      <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 640 640%22/%3E" class="c-top" data-src="static/img/results/0008_0007/pbsr14.webp" width="640" height="640" alt="PBSR-14 result" decoding="async">
+      <span class="c-label c-label-l">PBSR-14</span>
+      <span class="c-label c-label-r">SISR (DBSR-1)</span>
+      <span class="c-handle" aria-hidden="true"></span>
+      <input class="c-range" type="range" min="0" max="100" step="1" value="50" aria-label="Divider position: PBSR-14 on the left">
+    </div>
+    <div class="thumbs" role="group" aria-label="Scene">
+      <button type="button" data-scene="0008_0007" aria-pressed="true" aria-label="Scene 1"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22/%3E" data-src="static/img/results/0008_0007/thumb.webp" width="160" height="160" alt="" decoding="async"></button>
+      <button type="button" data-scene="0036_0050" aria-pressed="false" aria-label="Scene 2"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22/%3E" data-src="static/img/results/0036_0050/thumb.webp" width="160" height="160" alt="" decoding="async"></button>
+      <button type="button" data-scene="0077_0038" aria-pressed="false" aria-label="Scene 3"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22/%3E" data-src="static/img/results/0077_0038/thumb.webp" width="160" height="160" alt="" decoding="async"></button>
+      <button type="button" data-scene="0085_0011" aria-pressed="false" aria-label="Scene 4"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22/%3E" data-src="static/img/results/0085_0011/thumb.webp" width="160" height="160" alt="" decoding="async"></button>
+      <button type="button" data-scene="0008_0028" aria-pressed="false" aria-label="Scene 5"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22/%3E" data-src="static/img/results/0008_0028/thumb.webp" width="160" height="160" alt="" decoding="async"></button>
+      <button type="button" data-scene="0055_0000" aria-pressed="false" aria-label="Scene 6"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22/%3E" data-src="static/img/results/0055_0000/thumb.webp" width="160" height="160" alt="" decoding="async"></button>
+      <button type="button" data-scene="0010_0040" aria-pressed="false" aria-label="Scene 7"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22/%3E" data-src="static/img/results/0010_0040/thumb.webp" width="160" height="160" alt="" decoding="async"></button>
+      <button type="button" data-scene="0033_0003" aria-pressed="false" aria-label="Scene 8"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22/%3E" data-src="static/img/results/0033_0003/thumb.webp" width="160" height="160" alt="" decoding="async"></button>
+    </div>
+  </div>
+  <p class="note">&times;4 SR on BurstSR validation crops. Scenes 1&ndash;5 are the crops shown in the paper. Scenes 6&ndash;8 were selected from crops with a typical (median to 90th percentile) improvement of PBSR-14 over DBSR-1.</p>
+</section>
+
+<section id="quant" aria-labelledby="quant-h">
+  <h2 id="quant-h">Better than the single-frame baseline in all three metrics</h2>
+  <div class="table-wrap">
+    <table id="quant-table">
+      <caption>&times;4 SR on the BurstSR dataset with the same DBSR backbone. Underlined PBSR values beat DBSR-1. DBSR-1 corresponds to the SISR setting. DBSR-N uses N real frames; PBSR-N uses one real frame and N&minus;1 pseudo-burst frames. (z/s): zero-shot backbone without artifact-aware adaptation.</caption>
+      <thead>
+        <tr><th scope="col">Method</th><th scope="col" class="in">Input frames</th><th scope="col">PSNR &uarr;</th><th scope="col">SSIM &uarr;</th><th scope="col">LPIPS &darr;</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">DBSR-1</th><td class="in">1 real</td><td class="num">44.695</td><td class="num">0.971</td><td class="num">0.053</td></tr>
+        <tr><th scope="row">DBSR-2</th><td class="in">2 real</td><td class="num">46.112</td><td class="num">0.977</td><td class="num">0.040</td></tr>
+        <tr><th scope="row">DBSR-14</th><td class="in">14 real</td><td class="num">47.698</td><td class="num">0.984</td><td class="num">0.029</td></tr>
+        <tr class="grp"><th scope="row">PBSR-2 (z/s)</th><td class="in">1 real + 1 pseudo</td><td class="num">44.065</td><td class="num">0.970</td><td class="num u">0.048</td></tr>
+        <tr><th scope="row">PBSR-14 (z/s)</th><td class="in">1 real + 13 pseudo</td><td class="num">41.887</td><td class="num">0.954</td><td class="num">0.071</td></tr>
+        <tr class="grp ours"><th scope="row">PBSR-2</th><td class="in">1 real + 1 pseudo</td><td class="num u">45.140</td><td class="num u">0.974</td><td class="num u">0.040</td></tr>
+        <tr class="ours"><th scope="row">PBSR-14</th><td class="in">1 real + 13 pseudo</td><td class="num u">45.633</td><td class="num u">0.976</td><td class="num u">0.044</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="plots">
+    <figure><a href="static/img/fig/psnr_n.svg"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 569 281%22/%3E" data-src="static/img/fig/psnr_n.svg" width="569" height="281" alt="PSNR versus burst length N for DBSR, PBSR, and PBSR (z/s)" decoding="async"></a><figcaption>PSNR</figcaption></figure>
+    <figure><a href="static/img/fig/ssim_n.svg"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 568 281%22/%3E" data-src="static/img/fig/ssim_n.svg" width="568" height="281" alt="SSIM versus burst length N for DBSR, PBSR, and PBSR (z/s)" decoding="async"></a><figcaption>SSIM</figcaption></figure>
+    <figure><a href="static/img/fig/lpips_n.svg"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 569 281%22/%3E" data-src="static/img/fig/lpips_n.svg" width="569" height="281" alt="LPIPS versus burst length N for DBSR, PBSR, and PBSR (z/s)" decoding="async"></a><figcaption>LPIPS</figcaption></figure>
+  </div>
+  <p class="note">Metrics versus burst length N. DBSR uses N real frames. PBSR uses one real frame and N&minus;1 pseudo-burst frames. With adaptation, PSNR and SSIM rise with N while LPIPS slightly worsens. PBSR does not reach the PSNR and SSIM of DBSR-2, which uses two real frames. Click a plot to open it at full size.</p>
+</section>
+
+<section id="analysis" aria-labelledby="analysis-h">
+  <h2 id="analysis-h">Why it works</h2>
+  <div class="two-col">
+    <article>
+      <h3>Parallax, not just more inputs</h3>
+      <p>Pseudo frames made by 2D shifts and rotations (Shift+Rot.) add inputs but no parallax. NVS pseudo-bursts score better on every metric (adapted PBSR-14, BurstSR validation set).</p>
+      <div class="table-wrap">
+        <table id="ablation-table" class="mini">
+          <thead><tr><th scope="col">Pseudo frames</th><th scope="col">PSNR &uarr;</th><th scope="col">SSIM &uarr;</th><th scope="col">LPIPS &darr;</th></tr></thead>
+          <tbody>
+            <tr data-key="Shift+Rot."><th scope="row">Shift+Rot.</th><td class="num">44.985</td><td class="num">0.972</td><td class="num">0.075</td></tr>
+            <tr data-key="Pseudo-burst generation" class="ours"><th scope="row">Zero-shot NVS</th><td class="num">45.633</td><td class="num">0.976</td><td class="num">0.044</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <article>
+      <h3>Adaptation learns to trust the real frame</h3>
+      <figure>
+        <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 908 601%22/%3E" data-src="static/img/fig/artifact.webp" width="908" height="601" alt="Pseudo-burst frames with a distorted license plate and with varying noise and blur" decoding="async">
+        <figcaption>Pseudo-burst frames contain artifacts: a distorted license plate (top) and varying noise and blur (bottom).</figcaption>
+      </figure>
+      <figure>
+        <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 740 868%22/%3E" data-src="static/img/fig/fusion.webp" width="740" height="868" alt="Fusion-weight heatmaps of DBSR and PBSR for four input frames" decoding="async">
+        <figcaption>Fusion weights with four input frames. Without adaptation (W (z/s)), the real reference frame receives 14% of the weight. With adaptation (W), it receives 37%.</figcaption>
+      </figure>
+    </article>
+  </div>
+</section>
+
+<section id="citation" aria-labelledby="citation-h">
+  <h2 id="citation-h">Citation</h2>
+  <div class="bib">
+    <button class="copy" type="button" data-copy data-target="bibtex">Copy</button>
+<pre id="bibtex"><code>@article{kondo2026pbsr,
+  title   = {{PBSR}: Pseudo-Burst Super-Resolution via Zero-Shot Novel View Synthesis},
+  author  = {Kondo, Yuki and Ukita, Norimichi},
+  journal = {New Generation Computing},
+  volume  = {44},
+  number  = {4},
+  pages   = {32},
+  year    = {2026},
+  doi     = {10.1007/s00354-026-00336-6}
+}</code></pre>
+  </div>
+  <p class="cta"><a class="btn" href="https://doi.org/10.1007/s00354-026-00336-6" data-track="click-doi">Read the paper</a></p>
+</section>
+</main>
+
+<footer>
+  <p>This research was supported by JSPS KAKENHI Grant Number 23K24874.</p>
+  <p>Figures and results are from the paper (<a href="https://doi.org/10.1007/s00354-026-00336-6">doi:10.1007/s00354-026-00336-6</a>).
+    &copy; The Author(s), under exclusive licence to The Japanese Society for Artificial Intelligence and Springer Nature Japan KK, part of Springer Nature 2026.</p>
+  <p>The source code of this page is released under the MIT License. Images and the content of the paper are not covered.</p>
+  <p>Contents might be updated or deleted without notice regarding the original manuscript update and policy change.</p>
+</footer>
+</body>
+</html>
